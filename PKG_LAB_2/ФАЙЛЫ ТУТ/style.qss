@@ -1,0 +1,55 @@
+QWidget {
+    background-color: #f5f5ff; /* Светло-голубой цвет фона */
+}
+
+
+/* Стили для кнопок */
+QPushButton {
+    background-color: #483D8B;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+QPushButton:hover {
+    background-color: #28224f;
+}
+
+/* Стили для таблиц */
+/* Шрифт Montserrat для всей таблицы */
+QTableWidget {
+    font-family: "Montserrat";
+    font-size: 9pt;
+    background-color: #EDE7F6; /* Цвет фона таблицы — светло-фиолетовый */
+    gridline-color: #D1C4E9; /* Цвет границ внутри таблицы */
+}
+
+/* Стили для заголовков столбцов */
+QHeaderView::section {
+    background-color: #9575CD; /* Светло-фиолетовый для заголовков */
+    color: white; /* Белый цвет текста заголовков */
+    font-weight: bold;
+    padding: 5px;
+    font-size: 9pt;
+    font-family: "Montserrat";
+}
+
+/* Строки таблицы — элементы */
+QTableWidget::item {
+    background-color: #D1C4E9; /* Чуть светлее фиолетовый */
+    color: #333333; /* Темный текст */
+    padding: 5px;
+}
+
+/* Стили для надписей */
+QLabel {
+
+    color: #211f1f;
+}
+
+/* Стили для LineEdit */
+QLineEdit {
+    border: 1px solid #CCCCCC;
+    border-radius: 5px;
+    padding: 5px;
+}

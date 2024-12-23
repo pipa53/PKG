@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3D буква Б</title>
+    <style>
+        body
+        {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            
+        }
+        canvas 
+        {
+            display: block;
+        }
+        #controls, #viewControls 
+        { 
+            position: absolute;
+            background: white; 
+            color: black; 
+            border-radius: 20px; 
+            padding: 15px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            font-family: "Montserrat", sans-serif;
+            font-size: 16pt; 
+        }
+
+        /* ползунки */
+        #controls 
+        {
+            bottom: 20px; 
+            right: 20px; 
+        }
+
+        /* кнопки */
+        #viewControls 
+        {
+            top: 20px; 
+            right: 20px;
+        }
+        
+        label 
+        {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        /* Стили для ползунков */
+        input[type=range] 
+        {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 10px;
+            background: #ddd; 
+            border-radius: 5px;
+            outline: none;
+            margin-bottom: 10px;
+        }
+
+        /* кружок на слайдере */
+        input[type=range]::-webkit-slider-thumb 
+        {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #483D8B; 
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        /* оформление кнопки */
+        button 
+        {
+            margin: 5px 0;
+            padding: 10px 15px;
+            background: #483D8B; 
+            color: white;
+            border: none;
+            border-radius: 10px; 
+            cursor: pointer;
+            font-family: "Montserrat", sans-serif;
+            font-size: 16pt; 
+            box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); 
+        }
+
+        /* оформление кнопки (при наведении) */
+        button:hover
+        {
+            background: #28224f; 
+        }
+
+        /* матрица */
+        #matrixDisplay {
+            position: absolute;
+            top: 20px; 
+            left: 20px;
+            background: white;
+            color: black; 
+            border-radius: 20px;
+            padding: 30px; 
+            font-family: monospace;
+            font-size: 24px;
+            white-space: pre-wrap;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            width: 380px;
+            height: 150px;
+        }
+
+
+    </style>
+</head>
+<body >
+    <div id="controls">
+        <div>
+            <label>Масштаб:</label>
+            <input type="range" id="scale" min="0.5" max="2" step="0.1" value="1">
+        </div>
+        <div>
+            <label>Поворот X:</label>
+            <input type="range" id="rotationX" min="-180" max="180" value="0">
+        </div>
+        <div>
+            <label>Поворот Y:</label>
+            <input type="range" id="rotationY" min="-180" max="180" value="0">
+        </div>
+        <div>
+            <label>Поворот Z:</label>
+            <input type="range" id="rotationZ" min="-180" max="180" value="0">
+        </div>
+        <div>
+            <label>Перенос X:</label>
+            <input type="range" id="positionX" min="-5" max="5" step="0.1" value="0">
+        </div>
+        <div>
+            <label>Перенос Y:</label>
+            <input type="range" id="positionY" min="-5" max="5" step="0.1" value="0">
+        </div>
+        <div>
+            <label>Перенос Z:</label>
+            <input type="range" id="positionZ" min="-5" max="5" step="0.1" value="0">
+        </div>
+    </div>
+    <div id="viewControls">
+        <button id="viewOxy">Проекция Oxy</button>
+        <button id="viewOxz">Проекция Oxz</button>
+        <button id="viewOyz">Проекция Oyz</button>
+        <button id="view3D">3D вид</button>
+    </div>
+    <div id="matrixDisplay">Матрица преобразования:</div>
+    <script async src="https://unpkg.com/es-module-shims@1.6.3/dist/es-module-shims.js"></script>
+    <script type="importmap">
+    {
+        "imports": {
+            "three": "https://unpkg.com/three@0.159.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.159.0/examples/jsm/"
+        }
+    }
+    </script>
+    <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+    import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
+
+    // Создание сцены
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.setClearColor(0xb0b392); // Черный фон сцены
+document.body.appendChild(renderer.domElement);
+
+// Ортографические камеры для проекций
+const size = 10;
+const aspect = window.innerWidth / window.innerHeight;
+
+const cameraOxy = new THREE.OrthographicCamera(-size * aspect, size * aspect, size, -size, 0.1, 100);
+cameraOxy.position.set(0, 0, 10); // Вид на плоскость Oxy
+cameraOxy.lookAt(0, 0, 0);
+
+const cameraOxz = new THREE.OrthographicCamera(-size * aspect, size * aspect, size, -size, 0.1, 100);
+cameraOxz.position.set(0, 10, 0); // Вид на плоскость Oxz
+cameraOxz.lookAt(0, 0, 0);
+
+const cameraOyz = new THREE.OrthographicCamera(-size * aspect, size * aspect, size, -size, 0.1, 100);
+cameraOyz.position.set(10, 0, 0); // Вид на плоскость Oyz
+cameraOyz.lookAt(0, 0, 0);
+
+let currentCamera = camera;  // Используем перспективную камеру по умолчанию
+
+// Добавление осей координат
+const axesHelper = new THREE.AxesHelper(5);
+scene.add(axesHelper);
+
+// Добавление подписей осей
+const axisLabels = new THREE.Group();
+const fontLoader = new FontLoader();
+fontLoader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', (font) => {
+    const createLabel = (text, color, position) => {
+        const textGeometry = new TextGeometry(text, {
+            font: font,
+            size: 0.3,
+            height: 0.05,
+        });
+        const textMaterial = new THREE.MeshBasicMaterial({ color: color });
+        const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+        textMesh.position.set(position.x, position.y, position.z);
+        axisLabels.add(textMesh);
+    };
+    createLabel('X', 0xff0000, { x: 5.5, y: 0, z: 0 });
+    createLabel('Y', 0x00ff3c, { x: 0, y: 5.5, z: 0 });
+    createLabel('Z', 0x0000ff, { x: 0, y: 0, z: 5.5 });
+    scene.add(axisLabels); // Добавляем подписи только после загрузки
+});
+
+// Создание материалов
+const material = new THREE.MeshStandardMaterial({
+    color: 0x0aefff,    // Голубой цвет
+    metalness: 0.7,     // Степень "металличности" (0 — не металл, 1 — металл)
+    roughness: 0.2,     // Степень шероховатости (0 — гладкий, 1 — шероховатый)
+});
+
+
+// Создание группы для буквы "Б"
+const letterGroup = new THREE.Group();
+
+// Левая часть "Б"
+const cubeSize = 1;
+const leftGeometry = new THREE.BoxGeometry(cubeSize, cubeSize * 5, cubeSize);
+const leftMesh = new THREE.Mesh(leftGeometry, material);
+leftMesh.position.set(-1.5, 0, 0);
+letterGroup.add(leftMesh);
+
+// Правая укороченная часть "Б"
+const rightGeometry = new THREE.BoxGeometry(cubeSize, cubeSize * 2.5, cubeSize);
+const rightMesh = new THREE.Mesh(rightGeometry, material);
+rightMesh.position.set(1.5, -1.25, 0);
+letterGroup.add(rightMesh);
+
+
+// Нижняя перемычка "Б"
+const bottomGeometry = new THREE.BoxGeometry(cubeSize * 3, cubeSize, cubeSize);
+const bottomMesh = new THREE.Mesh(bottomGeometry, material);
+bottomMesh.position.set(0, -2, 0);
+letterGroup.add(bottomMesh);
+
+// Средняя перемычка "Б"
+const middleGeometry = new THREE.BoxGeometry(cubeSize * 3, cubeSize, cubeSize);
+const middleMesh = new THREE.Mesh(middleGeometry, material);
+middleMesh.position.set(0, 0, 0);
+letterGroup.add(middleMesh);
+
+// Верхняя перемычка "Б"
+const topGeometry = new THREE.BoxGeometry(cubeSize * 3, cubeSize, cubeSize);
+const topMesh = new THREE.Mesh(topGeometry, material);
+topMesh.position.set(0, 2, 0);
+letterGroup.add(topMesh);
+
+
+// Добавление группы на сцену
+scene.add(letterGroup);
+
+// Добавление света
+const light = new THREE.PointLight(0xffffff, 2, 100);
+light.position.set(10, 10, 10);
+scene.add(light);
+
+const ambientLight = new THREE.AmbientLight(0x808080);
+scene.add(ambientLight);
+const directionalLight = new THREE.DirectionalLight(0xffffff, 2);
+directionalLight.position.set(5, 10, 5);
+scene.add(directionalLight);
+
+
+// Настройка камеры и управления
+camera.position.set(5, 5, 5);
+camera.lookAt(0, 0, 0);
+const controls = new OrbitControls(camera, renderer.domElement);
+
+
+    // Проекция на плоскость Oxy
+document.getElementById('viewOxy').addEventListener('click', () => {
+    currentCamera = cameraOxy;
+    renderProjection('Проекция Oxy');
+});
+
+// Проекция на плоскость Oxz
+document.getElementById('viewOxz').addEventListener('click', () => {
+    currentCamera = cameraOxz;
+    renderProjection('Проекция Oxz');
+});
+
+// Проекция на плоскость Oyz
+document.getElementById('viewOyz').addEventListener('click', () => {
+    currentCamera = cameraOyz;
+    renderProjection('Проекция Oyz');
+});
+
+// 3D вид (возврат к перспективной камере)
+document.getElementById('view3D').addEventListener('click', () => {
+    currentCamera = camera;
+    renderProjection('3D вид');
+});
+
+
+// Сброс проекций
+function resetProjections() {
+    letterGroup.rotation.set(0, 0, 0);
+    letterGroup.scale.set(1, 1, 1);
+}
+
+// Функция для отображения текущей проекции
+function renderProjection(label) {
+    document.getElementById('matrixDisplay').innerHTML = label;
+}
+
+
+    // Обработчики событий для элементов управления
+    document.getElementById('scale').addEventListener('input', updateTransform);
+    document.getElementById('rotationX').addEventListener('input', updateTransform);
+    document.getElementById('rotationY').addEventListener('input', updateTransform);
+    document.getElementById('rotationZ').addEventListener('input', updateTransform);
+    document.getElementById('positionX').addEventListener('input', updateTransform);
+    document.getElementById('positionY').addEventListener('input', updateTransform);
+    document.getElementById('positionZ').addEventListener('input', updateTransform);
+
+   function updateTransform() {
+    const scale = parseFloat(document.getElementById('scale').value);
+    const rotationX = parseFloat(document.getElementById('rotationX').value);
+    const rotationY = parseFloat(document.getElementById('rotationY').value);
+    const rotationZ = parseFloat(document.getElementById('rotationZ').value);
+    const positionX = parseFloat(document.getElementById('positionX').value);
+    const positionY = parseFloat(document.getElementById('positionY').value);
+    const positionZ = parseFloat(document.getElementById('positionZ').value);
+
+    letterGroup.scale.set(scale, scale, scale);
+    letterGroup.rotation.set(
+        THREE.MathUtils.degToRad(rotationX),
+        THREE.MathUtils.degToRad(rotationY),
+        THREE.MathUtils.degToRad(rotationZ)
+    );
+    letterGroup.position.set(positionX, positionY, positionZ);
+
+    const matrix = letterGroup.matrix.elements;
+    document.getElementById('matrixDisplay').innerHTML =
+        'Матрица преобразования:<br>' +
+        `[${matrix[0].toFixed(2)}, ${matrix[4].toFixed(2)}, ${matrix[8].toFixed(2)}, ${matrix[12].toFixed(2)}]<br>` +
+        `[${matrix[1].toFixed(2)}, ${matrix[5].toFixed(2)}, ${matrix[9].toFixed(2)}, ${matrix[13].toFixed(2)}]<br>` +
+        `[${matrix[2].toFixed(2)}, ${matrix[6].toFixed(2)}, ${matrix[10].toFixed(2)}, ${matrix[14].toFixed(2)}]<br>` +
+        `[${matrix[3].toFixed(2)}, ${matrix[7].toFixed(2)}, ${matrix[11].toFixed(2)}, ${matrix[15].toFixed(2)}]`;
+}
+
+
+    // Анимация
+    function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, currentCamera); // Используем текущую камеру
+}
+
+    animate();
+    </script>
+</body>
+</html>

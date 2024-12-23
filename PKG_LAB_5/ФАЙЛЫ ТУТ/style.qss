@@ -1,0 +1,94 @@
+/* Пример QSS стиля для всего приложения */
+
+/* Надписи (лейблы) */
+QLabel {
+border-radius: 10px;
+
+    background-color: white;
+    color: #483D8B;      /* Оранжевый цвет текста */
+    font-size: 18pt;     /* Размер шрифта 16 пунктов */
+font-family: "Montserrat";
+
+}
+
+/* #e67e22*/
+
+
+
+/* Кнопки */
+QPushButton {
+background-color: #483D8B;
+    color: white;
+    border-radius: 10px;
+    padding: 10px;
+    color: white;               /* Белый цвет текста */
+    font-family: "Montserrat";
+    font-size: 16pt;            /* Размер шрифта 16 пунктов */
+}
+
+/* Наведение на кнопки */
+QPushButton:hover {
+    background-color: #28224f; /* Цвет фона при наведении */
+}
+
+/* Фокус на кнопки (нажатие) */
+QPushButton:focus {
+    outline: none;              /* Убираем стандартное подчеркивание */
+}
+
+/* Добавляем тень к кнопкам */
+QPushButton {
+    box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Тень справа снизу */
+}
+
+/* Поля для ввода */
+QLineEdit {
+    background-color: #EDE7F6; /* Слегка сероватый фон */
+    font-size: 16pt;            /* Размер шрифта 16 пунктов */
+    padding: 8px 12px;          /* Внутренний отступ поля */
+    border: none;               /* Убираем границу поля */
+    border-radius: 5px;         /* Радиус закругления углов */
+}
+
+/* Таблица (QTableWidget) */
+QTableWidget {
+    font-size: 16pt;           /* Размер шрифта */
+    color: #e67e22;            /* Оранжевый цвет текста */
+}
+
+/* Заголовки таблицы */
+QHeaderView::section {
+    background-color: #3498db; /* Голубой фон заголовков */
+    color: white;              /* Белый цвет текста в заголовках */
+    font-size: 14 pt;           /* Размер шрифта заголовков */
+    font-weight: bold;         /* Полужирный шрифт для заголовков */
+    padding: 8px;              /* Отступ внутри заголовков */
+    border: none;              /* Убираем границу заголовков */
+}
+
+/* Ячейки таблицы */
+QTableWidget::item {
+    padding: 8px;              /* Отступы внутри ячеек */
+}
+
+/* Выбранные ячейки (цвет фона для выделенных ячеек) */
+QTableWidget::item:selected {
+    background-color: #2980b9; /* Темно-голубой цвет фона для выделенных ячеек */
+    color: white; /* Белый цвет текста для выделенных ячеек */
+}
+/* Ползунок слайдера */
+QSlider::groove:vertical {
+    border: 1px solid #2cbf9d; /* Синий цвет границы */
+    background: #3498db;       /* Синий фон (как верхняя строка таблицы) */
+    height: 8px;               /* Высота фона слайдера */
+    border-radius: 4px;        /* Закругленные края */
+}
+
+QSlider::handle:vertical {
+    background: #e67e22;       /* Оранжевый цвет ползунка */
+    border: 1px solid #e67e22; /* Оранжевая граница ползунка */
+    width: 20px;               /* Ширина ползунка */
+    margin: -6px 0;            /* Смещение ползунка */
+    border-radius: 10px;       /* Закругленные края ползунка */
+}
+

@@ -1,0 +1,44 @@
+/* Стиль для кнопок */
+QPushButton {
+    background-color: #b915ff; /* Светло-фиолетовый */
+    color: white; /* Белый текст */
+    border-radius: 10px; /* Скругленные края */
+    padding: 10px 20px; /* Отступы */
+}
+
+QPushButton:hover {
+    background-color: #D080FF; /* Темнее при наведении */
+}
+
+/* Цвет текста для остальных элементов */
+QLabel, QLineEdit, QTextEdit, QComboBox {
+    color: blue; /* Синий текст */
+}
+
+/* Скругленные текстовые поля */
+QLineEdit, QTextEdit {
+    border: 2px solid lightgray; /* Цвет рамки */
+    border-radius: 10px; /* Скругленные углы */
+    padding: 5px; /* Внутренний отступ */
+    background-color: white; /* Фон текстового поля */
+    color: blue; /* Синий текст */
+}
+
+/* Стиль для слайдеров */
+QSlider {
+    background: transparent; /* Бесцветный фон слайдера */
+}
+
+QSlider::handle {
+    background: green; /* Цвет самого ползунка */
+    width: 20px; /* Ширина ползунка */
+    height: 20px; /* Высота ползунка */
+    margin: -8px 0; /* Отступы */
+    border-radius: 10px; /* Круглый ползунок */
+}
+
+QSlider::groove {
+    background: #6bad1f; /* Салатовый цвет дорожки */
+    height: 4px; /* Высота дорожки */
+    border-radius: 2px; /* Скругленные края дорожки */
+}
